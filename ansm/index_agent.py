@@ -4,6 +4,8 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import time
 
+import content_agent
+
 url = "https://ansm.sante.fr/S-informer/Informations-de-securite-Lettres-aux-professionnels-de-sante"
 
 
@@ -18,11 +20,11 @@ def search_indices():
     
 
 
-    # options = Options()
-    # options.add_argument("--start-maximized")
-    # options.add_argument("headless")
+    options = Options()
+    options.add_argument("--start-maximized")
+    options.add_argument("headless")
 
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
     driver.get(url)
     driver.refresh()
@@ -63,7 +65,7 @@ def search_indices():
     time.sleep(5)
     driver.quit()
 
-    print(links)
+    return content_agent.get_contents(links)
 
     
 
@@ -106,4 +108,10 @@ def get_indices():
     return (search_strings, date_from, date_to)
 
 
-search_indices()
+
+if __name__ == "__main__":
+    datas = search_indices()
+
+    for data in datas:
+        print(data)
+
