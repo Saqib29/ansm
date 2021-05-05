@@ -50,22 +50,31 @@ def search_indices():
 
         time.sleep(2)
         
-        # get href links
-        articles = driver.find_elements_by_tag_name('article')
-        for i in range(1, len(articles)+1):
-            data = driver.find_element_by_xpath('//*[@id="wrapper"]/div/div/article['+ str(i) +']')
-
-            href = data.find_element_by_tag_name('a').get_attribute('href')
-            links.append(href)
-
-        driver.refresh()
+        
     
-    
+        while True:
+            # get href links
+            articles = driver.find_elements_by_tag_name('article')
+            for i in range(1, len(articles)+1):
+                data = driver.find_element_by_xpath('//*[@id="wrapper"]/div/div/article['+ str(i) +']')
+
+                href = data.find_element_by_tag_name('a').get_attribute('href')
+                links.append(href)
+
+            driver.refresh()
+            try:
+                pagination = driver.find_element_by_css_selector('span.next > a')
+                driver.execute_script('arguments[0].click();', pagination)
+            except:
+                break
+        
+
 
     time.sleep(5)
-    driver.quit()
+    # driver.quit()
 
     return content_agent.get_contents(links)
+
 
     
 
