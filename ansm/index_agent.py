@@ -9,6 +9,22 @@ import content_agent
 url = "https://ansm.sante.fr/S-informer/Informations-de-securite-Lettres-aux-professionnels-de-sante"
 
 
+# variables contains xpath
+
+# xpath including search_indices function
+search_filed_xpath = "//input[@id='global_search_text']"
+search_icon_xpath = '//*[@id="btn-header-icon"]'
+search_button_xpath = '//*[@id="btn-header-search"]'
+pagination_xpath = "//a[normalize-space()='>']"
+
+# xpath including select_date function
+date_btn_xpath = "//a[normalize-space()='Date']"
+startDate_xpath = '//*[@id="filter_startDate"]'
+endDate_xpath = '//*[@id="filter_endDate"]'
+valider_xpath = "//i[contains(@class,'fa fa-check')]"
+
+
+
 def search_indices():
 
     # read input_output xlsx file to get search and date period for ANSM database
@@ -32,8 +48,8 @@ def search_indices():
     links = []
     for key in search_string:
         
-        driver.get(url)
-        search_field = driver.find_elements_by_id('filter_text')[0]
+        # driver.get(url)
+        search_field = driver.find_element_by_xpath(search_filed_xpath)
         driver.execute_script('''
             var elem = arguments[0];
             var value = arguments[1];
@@ -41,10 +57,10 @@ def search_indices():
         ''', search_field, key)
 
 
-        search_icon = driver.find_element_by_xpath('//*[@id="btn-header-icon"]')
+        search_icon = driver.find_element_by_xpath(search_icon_xpath)
         driver.execute_script('arguments[0].click();', search_icon)
         driver.implicitly_wait(2)
-        search_button = driver.find_element_by_xpath('//*[@id="btn-header-search"]')
+        search_button = driver.find_element_by_xpath(search_button_xpath)
         driver.execute_script('arguments[0].click();', search_button)
         select_date(driver, date_from, date_to)
 
@@ -63,7 +79,7 @@ def search_indices():
 
             driver.refresh()
             try:
-                pagination = driver.find_element_by_css_selector('span.next > a')
+                pagination = driver.find_element_by_xpath(pagination_xpath)
                 driver.execute_script('arguments[0].click();', pagination)
             except:
                 break
@@ -74,17 +90,18 @@ def search_indices():
     # driver.quit()
 
     return content_agent.get_contents(links)
+    # return "done"
 
 
     
 
 def select_date(driver, date_from, date_to):
-    date_btn = driver.find_element_by_xpath('//*[@id="filter_result"]/div/div[2]/div/div[4]/a')
+    date_btn = driver.find_element_by_xpath(date_btn_xpath)
     driver.execute_script("arguments[0].click();", date_btn)
     time.sleep(2)
 
     # set start date
-    startDate = driver.find_element_by_id('filter_startDate')
+    startDate = driver.find_element_by_xpath(startDate_xpath)
     value = driver.execute_script('return arguments[0].value;', startDate)
     driver.execute_script('''
         var elem = arguments[0];
@@ -93,7 +110,7 @@ def select_date(driver, date_from, date_to):
     ''', startDate, date_from)
 
     # set end date
-    endDate = driver.find_element_by_id('filter_endDate')
+    endDate = driver.find_element_by_xpath(endDate_xpath)
     value = driver.execute_script('return arguments[0].value;', endDate)
     driver.execute_script('''
         var elem = arguments[0];
@@ -102,7 +119,7 @@ def select_date(driver, date_from, date_to):
     ''', endDate, date_to)
 
 
-    valider = driver.find_element_by_link_text("Valider")
+    valider = driver.find_element_by_xpath(valider_xpath)
     driver.execute_script("arguments[0].click();", valider)
 
 
