@@ -16,12 +16,18 @@ search_filed_xpath = "//input[@id='global_search_text']"
 search_icon_xpath = '//*[@id="btn-header-icon"]'
 search_button_xpath = '//*[@id="btn-header-search"]'
 pagination_xpath = "//a[normalize-space()='>']"
+each_article = '//*[@id="wrapper"]/div/div/article['
 
 # xpath including select_date function
 date_btn_xpath = "//a[normalize-space()='Date']"
 startDate_xpath = '//*[@id="filter_startDate"]'
 endDate_xpath = '//*[@id="filter_endDate"]'
 valider_xpath = "//i[contains(@class,'fa fa-check')]"
+
+
+# calling api to retrieve elements selector from database
+def get_selectors():
+    pass
 
 
 
@@ -72,7 +78,7 @@ def search_indices():
             # get href links
             articles = driver.find_elements_by_tag_name('article')
             for i in range(1, len(articles)+1):
-                data = driver.find_element_by_xpath('//*[@id="wrapper"]/div/div/article['+ str(i) +']')
+                data = driver.find_element_by_xpath(each_article + str(i) +']')
 
                 href = data.find_element_by_tag_name('a').get_attribute('href')
                 links.append(href)
@@ -89,8 +95,8 @@ def search_indices():
     time.sleep(5)
     # driver.quit()
 
-    return content_agent.get_contents(links)
-    # return "done"
+    # return content_agent.get_contents(links)
+    return links
 
 
     
