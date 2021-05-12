@@ -62,28 +62,40 @@ def search_indices():
             elem.value = value;
         ''', search_field, key)
 
+        try: 
+            search_icon = driver.find_element_by_xpath(search_icon_xpath)
+            driver.execute_script('arguments[0].click();', search_icon)
+        except:
+            return links
 
-        search_icon = driver.find_element_by_xpath(search_icon_xpath)
-        driver.execute_script('arguments[0].click();', search_icon)
         driver.implicitly_wait(2)
-        search_button = driver.find_element_by_xpath(search_button_xpath)
-        driver.execute_script('arguments[0].click();', search_button)
-        select_date(driver, date_from, date_to)
 
-        time.sleep(2)
+        try:    
+            search_button = driver.find_element_by_xpath(search_button_xpath)
+            driver.execute_script('arguments[0].click();', search_button)
+        except:
+            return links
         
+        select_date(driver, date_from, date_to)
+        time.sleep(2)
         
     
         while True:
-            # get href links
-            articles = driver.find_elements_by_tag_name('article')
-            for i in range(1, len(articles)+1):
-                data = driver.find_element_by_xpath(each_article + str(i) +']')
 
-                href = data.find_element_by_tag_name('a').get_attribute('href')
-                links.append(href)
+            try:  
+                # get href links
+                articles = driver.find_elements_by_tag_name('article')
+                for i in range(1, len(articles)+1):
+                    data = driver.find_element_by_xpath(each_article + str(i) +']')
 
-            driver.refresh()
+                    href = data.find_element_by_tag_name('a').get_attribute('href')
+                    links.append(href)
+
+                driver.refresh()
+            except:
+                break
+
+
             try:
                 pagination = driver.find_element_by_xpath(pagination_xpath)
                 driver.execute_script('arguments[0].click();', pagination)
@@ -102,32 +114,44 @@ def search_indices():
     
 
 def select_date(driver, date_from, date_to):
-    date_btn = driver.find_element_by_xpath(date_btn_xpath)
-    driver.execute_script("arguments[0].click();", date_btn)
-    time.sleep(2)
+    try:
+        # select date button
+        date_btn = driver.find_element_by_xpath(date_btn_xpath)
+        driver.execute_script("arguments[0].click();", date_btn)
+        time.sleep(2)
+    except:
+        return
 
-    # set start date
-    startDate = driver.find_element_by_xpath(startDate_xpath)
-    value = driver.execute_script('return arguments[0].value;', startDate)
-    driver.execute_script('''
-        var elem = arguments[0];
-        var value = arguments[1];
-        elem.value = value;
-    ''', startDate, date_from)
+    try:
+        # set start date
+        startDate = driver.find_element_by_xpath(startDate_xpath)
+        value = driver.execute_script('return arguments[0].value;', startDate)
+        driver.execute_script('''
+            var elem = arguments[0];
+            var value = arguments[1];
+            elem.value = value;
+        ''', startDate, date_from)
+    except:
+        pass
 
-    # set end date
-    endDate = driver.find_element_by_xpath(endDate_xpath)
-    value = driver.execute_script('return arguments[0].value;', endDate)
-    driver.execute_script('''
-        var elem = arguments[0];
-        var value = arguments[1];
-        elem.value = value;
-    ''', endDate, date_to)
+    try:
+        # set end date
+        endDate = driver.find_element_by_xpath(endDate_xpath)
+        value = driver.execute_script('return arguments[0].value;', endDate)
+        driver.execute_script('''
+            var elem = arguments[0];
+            var value = arguments[1];
+            elem.value = value;
+        ''', endDate, date_to)
+    except:
+        pass
 
-
-    valider = driver.find_element_by_xpath(valider_xpath)
-    driver.execute_script("arguments[0].click();", valider)
-
+    try:
+        # select valider button and hit enter
+        valider = driver.find_element_by_xpath(valider_xpath)
+        driver.execute_script("arguments[0].click();", valider)
+    except:
+        return
 
 
 def get_indices():
